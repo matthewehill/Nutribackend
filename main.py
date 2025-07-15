@@ -15,8 +15,8 @@ def home():
 def search():
     data = request.get_json()
     keyword = data.get('keyword', '')
-    offset = int(data.get('offset', 0))  # Add pagination offset
-    number = int(data.get('number', 10))  # Items per page
+    offset = int(data.get('offset', 0))
+    number = int(data.get('number', 10))
 
     url = "https://api.spoonacular.com/recipes/complexSearch"
     params = {
@@ -43,7 +43,7 @@ def search():
                 "title": r.get("title"),
                 "image": r.get("image"),
                 "summary": r.get("summary"),
-                "instructions": r.get("instructions"),
+                "instructions": r.get("instructions"),  # Might be empty; fallback with new endpoint
                 "readyInMinutes": r.get("readyInMinutes"),
                 "servings": r.get("servings"),
                 "extendedIngredients": [
@@ -61,6 +61,26 @@ def search():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route('/get-recipe', methods=['POST'])
+def get_recipe():
+    data = request.get_json()
+    recipe_id = data.get("id")
+
+    if not recipe_id:
+        return jsonify({"error": "Missing recipe ID"}), 400
+
+    url = f"https://api.spoonacular.com/recipes/{recipe_id}/information"
+    params = {
+        "includeNutrition": True,
+        "apiKey": API_KEY
+    }
+
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return jsonify(response.json())
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)
-
