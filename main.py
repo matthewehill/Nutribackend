@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-API_KEY = 188d8c8cf6594fb7a130484e55d3b5e2
+API_KEY = "188d8c8cf6594fb7a130484e55d3b5e2"
 
 @app.route('/')
 def home():
