@@ -21,6 +21,7 @@ def search():
     url = "https://api.spoonacular.com/recipes/complexSearch"
     params = {
         "query": keyword,
+        "includeIngredients": keyword,  # Ensures the ingredient is part of the recipe
         "number": number,
         "offset": offset,
         "instructionsRequired": True,
@@ -43,7 +44,7 @@ def search():
                 "title": r.get("title"),
                 "image": r.get("image"),
                 "summary": r.get("summary"),
-                "instructions": r.get("instructions"),  # Might be empty; fallback with new endpoint
+                "instructions": r.get("instructions"),
                 "readyInMinutes": r.get("readyInMinutes"),
                 "servings": r.get("servings"),
                 "extendedIngredients": [
