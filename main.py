@@ -21,7 +21,6 @@ def search():
     url = "https://api.spoonacular.com/recipes/complexSearch"
     params = {
         "query": keyword,
-        "includeIngredients": keyword,  # Ensures the ingredient is part of the recipe
         "number": number,
         "offset": offset,
         "instructionsRequired": True,
@@ -29,6 +28,11 @@ def search():
         "fillIngredients": True,
         "apiKey": API_KEY
     }
+
+    # Only add ingredient filtering if the keyword is specific and useful
+    generic_terms = ['meal', 'recipe', 'food', 'dish', 'dinner', 'lunch', 'breakfast', 'snack', '']
+    if keyword.lower() not in generic_terms:
+        params["includeIngredients"] = keyword
 
     try:
         response = requests.get(url, params=params)
@@ -48,9 +52,8 @@ def search():
                 "readyInMinutes": r.get("readyInMinutes"),
                 "servings": r.get("servings"),
                 "extendedIngredients": [
-                    {
-                        "original": ing.get("original")
-                    } for ing in r.get("extendedIngredients", [])
+                    {"original": ing.get("original")}
+                    for ing in r.get("extendedIngredients", [])
                 ]
             })
 
